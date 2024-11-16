@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -41,4 +42,21 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-}
+
+        // public function instructor()
+        // {
+        //     return $this->belongsTo(Course::class);
+        // }
+
+        public function instructor()
+        {
+            return $this->state( fn (array $attributes)=>[
+                'is_instructor' => true,
+            ]);
+        }
+    }
+
+
+
+
+

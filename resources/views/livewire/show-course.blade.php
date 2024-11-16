@@ -1,3 +1,3 @@
 <div>
-    {{$course->title}}
+{{ $this->courseInfolists}}
 </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\Course;
 use Livewire\Livewire;
 use App\Livewire\ShowCourse;
@@ -14,16 +15,19 @@ it('renders successfully', function () {
 it('shows course details',function (){
     //Arrange
    $course= Course::factory()
-    ->state(
-        [
-'title' => 'Course Title'
-        ])
-    ->create();
+   ->for(User::factory()->instructor() ,'instructor')
+
+   ->create();
+
+
     //Acف  && Assert
     Livewire::test(ShowCourse::class,['course' => $course])
     ->assertOk()
-    ->assertSeeText('Course Title')
+    ->assertSeeText($course->title)
     ->assertSeeText($course->tagline)
-    ->assertSeeText($course->description);
+    ->assertSeeText($course->description)
+    ->assertSeeText($course->instructor->name)
+    ->assertSeeText('Nov 16, 2024');
 
 });
+
