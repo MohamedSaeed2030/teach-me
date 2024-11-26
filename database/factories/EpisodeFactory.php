@@ -17,7 +17,11 @@ class EpisodeFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence()
+            'title' => fake()->sentence(),
+            'length_in_minutes' => fake()->randomDigit(),
+            'vimeo_id'=> fake()->text(9),
+            'overview'=>fake()->paragraph(),
+            'sort'=>fake()->randomDigit()
         ];
     }
 }

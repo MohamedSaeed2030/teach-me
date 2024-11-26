@@ -26,8 +26,10 @@ class Course extends Model
 
     public function episodes()
     {
-        return $this->hasMany(Episode::class);
+        return $this->hasMany(Episode::class)->orderBy('sort');
     }
+
+
 
 
 

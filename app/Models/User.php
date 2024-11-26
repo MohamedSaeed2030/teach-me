@@ -46,4 +46,18 @@ class User extends Authenticatable
             'is_instructor'=>"boolean"
         ];
     }
+
+
+    public function courses()
+    {
+       return $this->belongsToMany(Course::class);
+    }
+
+    public function watchedEpisodes()
+    {
+        return $this->belongsToMany(Episode::class);
+    }
+
+
+
 }

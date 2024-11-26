@@ -57,9 +57,6 @@ it('has the episodes length ', function () {
     ->for(User::factory()->instructor() ,'instructor')
     ->create();
 
-// dump($courseB->formatted_length);
-// dump($courseA->formatted_length);
-// dump($courseC->formatted_length);
 
 expect($courseA->formatted_length)
 ->toBe('1 hr 40 mins');
