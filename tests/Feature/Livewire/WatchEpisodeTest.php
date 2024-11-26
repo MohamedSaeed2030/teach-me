@@ -31,8 +31,8 @@ it('shows the first episode if none is provided', function () {
 
 
     Livewire::test(WatchEpisode::class, ['course' => $course])
-   ->assertOk();
-    // ->assertSeeText(value: $course->episodes->first()->overview);
+   ->assertOk()
+    ->assertSeeText(value: $course->episodes->first()->overview);
 });
 
 
@@ -96,4 +96,44 @@ it('shows the video player',function(){
 });
 
 
+it('redirect to next episode after video ends',function () {
+    $course= Course::factory()
+    ->for(User::factory()->instructor() ,'instructor')
+    ->has(Episode::factory()->count(3)->state( new Sequence(
+        ['title' =>'First episode overview','sort' => 1],
+                  ['title' =>'Second episode overview','sort'=> 2],
+
+
+    )),'episodes')
+    ->create();
+
+Livewire::test(WatchEpisode::class,['course'=> $course])
+->assertOk()
+->assertSeeText('First episode overview')
+->dispatch('episode-ended',$course->episodes->first()->getRouteKey())
+->assertSeeText('Second episode overview');
+
+
+    });
+
+
+
+it( 'stays in the current episode after video ends and it is the last one',function () {
+        $course= Course::factory()
+        ->for(User::factory()->instructor() ,'instructor')
+        ->has(Episode::factory()->count(3)->state( new Sequence(
+            ['title' =>'First episode overview','sort' => 1],
+                      ['title' =>'Second episode overview','sort'=> 2],
+
+
+        )),'episodes')
+        ->create();
+
+Livewire::test(WatchEpisode::class,['course'=> $course ,'episode' =>$course->episodes->last()->getRouteKey()])
+    ->assertOk()
+    ->dispatch('episode-ended',$course->episodes->first()->getRouteKey())
+    ->assertSeeText('Second episode overview');
+
+
+        });
 

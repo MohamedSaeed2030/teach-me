@@ -24,7 +24,21 @@
         style="position:absolute;top:0;left:0;width:100%;height:100%;"
         title="فنجان"></iframe>
     </div>
-    @script
+
     <script src="https://player.vimeo.com/api/player.js"></script>
-    @endscript
+
 </x-dynamic-component>
+
+    @script
+    <script>
+        let iframe =document.querySelector('iframe');
+        let player = new Vimeo.Player(iframe);
+
+        player.on('ended' ,(data) =>{
+            $wire.dispatch('episode-ended',{
+            episode:'{{$getRecord()->id}}'
+            });
+        });
+
+    </script>
+    @endscript
