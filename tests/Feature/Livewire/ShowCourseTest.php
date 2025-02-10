@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Course;
 use Livewire\Livewire;
@@ -12,7 +13,10 @@ it('renders successfully', function () {
     ->for(User::factory()->instructor() ,'instructor')
     ->has(Episode::factory()->state(['length_in_minutes' => 10])->count(10),'episodes')
     ->create();
-    Livewire::test(ShowCourse::class,['course'=>$course])
+    $user=User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(ShowCourse::class,['course'=>$course])
         ->assertStatus(200);
 
     });
@@ -27,8 +31,10 @@ it('shows course details',function (){
 
 //    dd($course->formatrd_length);
     // && Assert
-    
-    Livewire::test(ShowCourse::class,['course' => $course])
+
+    $user=User::factory()->create();
+    $user->courses()->attach($course);
+    Livewire::actingAs($user)->test(ShowCourse::class,['course' => $course])
     ->assertOk()
     ->assertSeeText($course->title)
     ->assertSeeText($course->tagline)
@@ -51,8 +57,9 @@ it('shows the episode list',function () {
 
     )))
     ->create();
-
-Livewire::test(ShowCourse::class,['course'=> $course])
+    $user=User::factory()->create();
+    $user->courses()->attach($course);
+Livewire::actingAs($user)->test(ShowCourse::class,['course'=> $course])
 ->assertOk()
 ->assertSeeText('First episode')
 ->assertSeeText('5 mins')
@@ -65,3 +72,58 @@ Livewire::test(ShowCourse::class,['course'=> $course])
 
 
 });
+
+it('show the start watching action',function () {
+    $course= Course::factory()
+    ->for(User::factory()->instructor() ,'instructor')
+    ->has(Episode::factory())
+    ->create();
+
+    Livewire::test(ShowCourse::class,['course'=>$course])
+    ->assertSee('Start Watching');
+});
+
+
+
+
+it('shows the continue watching action',function () {
+    $course= Course::factory()
+    ->for(User::factory()->instructor() ,'instructor')
+    ->has(Episode::factory())
+    ->create();
+
+    $user=User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(ShowCourse::class,['course'=>$course])
+    ->assertSee('Continue Watching');
+});
+
+
+it('shows the course tags',function () {
+    $course= Course::factory()
+    ->for(User::factory()->instructor() ,'instructor')
+    ->has(Episode::factory())
+    ->has(Tag::factory()
+    ->count(2)
+    ->state(new Sequence(
+        ['name'=>'Laravel'],
+        ['name'=>'Filament'],
+    ))
+)
+
+    ->create();
+
+    $user=User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(ShowCourse::class,['course'=>$course])
+    ->assertOk()
+    ->assertSeeText([
+        'Laravel',
+        'Filament'
+    ]);
+
+});
+
+

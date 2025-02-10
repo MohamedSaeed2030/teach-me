@@ -14,9 +14,9 @@ class Course extends Model
     /** @use HasFactory<\Database\Factories\CourseFactory> */
     use HasFactory;
 
+    // protected $withCount=['episodes'];
 
     protected $fillable = ['title','taglin','description'];
-
 
 
     public function instructor()
@@ -30,7 +30,10 @@ class Course extends Model
     }
 
 
-
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 
 
     // protected function formattedLength(): Attribute{

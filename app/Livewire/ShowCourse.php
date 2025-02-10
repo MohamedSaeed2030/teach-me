@@ -13,6 +13,8 @@ use Filament\Infolists\Components\TextEntry;
 
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 
@@ -27,15 +29,7 @@ public function mount(Course $course){
 $this->course = $course;
 $this->course->loadCount( 'episodes');
 
-
-// dump($this->course->formatted_length);
-// dump($this->course->title);
-
-// dd($course->episodes->first()->title);
-
-
 }
-
 
     public function courseInfolists(Infolist $infolist): Infolist
     {
@@ -44,6 +38,9 @@ $this->course->loadCount( 'episodes');
             ->schema([
                   Section::make()
                  ->schema([
+                    TextEntry::make('tags.name')
+                    ->hiddenLabel()
+                    ->badge(),
                     TextEntry::make('title')
                     ->alignCenter()
                     ->label('')
@@ -62,10 +59,9 @@ $this->course->loadCount( 'episodes');
 
 
                     Fieldset::make('')
-                    ->columns(4 )
+                    ->columns(3 )
                     ->columnSpan(1)
-                    ->schema(
-                        [
+                    ->schema([
                             TextEntry::make('episodes_count')
                             ->label('')
                             ->icon('heroicon-o-film')
@@ -80,14 +76,25 @@ $this->course->loadCount( 'episodes');
                             // ->date(format: 'M d, Y')
                             ->formatStateUsing(fn ($state) => $state->diffForHumans())
                             ->icon('heroicon-o-calendar'),
-                        ]
-                    )
-                    ->extraAttributes(['class'=> 'border-none !p-0'])
-                ])
+                        ])
+
+                    ->extraAttributes(['class'=> 'border-none !p-0']),
+                    Actions::make([
+                        Action::make('watch')
+                        ->label(fn(Course $record) =>
+                        auth()->user()?->courses->contains($record) ? 'Continue Watching' : 'Start Watching')
+                        ->button()
+
+                        ->outlined()
+                        ->icon('heroicon-o-play-circle')
+                        ->action(fn (Course $record)=>$this->redirectRoute('courses.episodes.show',['course' => $record]))
+
+                    ])->columnSpanFull()
+
+                    ])
                 ->columns(2),
                 Section::make('About this course')
                 // ->description(fn(Course $record) => $record->description)
-
                 ->columns(3)
                 ->schema([
                     TextEntry::make('description')

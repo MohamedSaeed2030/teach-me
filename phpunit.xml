@@ -18,6 +18,7 @@
         </include>
     </source>
     <php>
+        <env name="STRIPE_SECRET" value="sk_test_51QSaC7JEVzMyIUQegCqDFwIlWEsnHyZU50A8h8vcgBQyFYPP1czeByVK3eR6uTL9rBdhUJkT0hY8cDFwaqfeDxVi00Bde0CaK9"/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>

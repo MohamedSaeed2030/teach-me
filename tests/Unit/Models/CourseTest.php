@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Episode;
@@ -68,4 +69,18 @@ expect($courseC->formatted_length)
 ->toBe( '0 mins');
 
 
+});
+
+
+it('has many tags', function () {
+    $course= Course::factory()
+    ->for(User::factory()->instructor() ,'instructor')
+    ->has(Episode::factory())
+    ->has(Tag::factory(3),'tags')
+    ->create();
+
+    expect($course->tags)
+    ->toBeInstanceOf(Collection::class)
+    ->toHaveLength(3)
+    ->each->toBeInstanceOf(Tag::class);
 });
